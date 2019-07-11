@@ -1,0 +1,175 @@
+{% extends 'app.html' %}
+{% load static %}
+
+{% block body %}
+
+
+    <div>
+        <div class="alert alert-info">Todos los libros</div>
+        <a href="#" id="add_book" class="btn btn-success">Agregar libro</a>
+        <button id="show_book" type="button" style="display:none;" class="btn btn-success"><span
+                class="glyphicon glyphicon-circle-arrow-left"></span> Volver
+        </button>
+        <div id="book_table">
+            <table id="table" class="table table-bordered">
+                <thead class="alert-success">
+                <tr>
+                    <th>Título</th>
+                    <th>Categoría</th>
+                    <th>Autor</th>
+                    <th>Descripción</th>
+                    <th>Disponibles</th>
+                    <th>Acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for book in books %}
+                    <tr>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.categories.all.0.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.description }}</td>
+                        <td>{{ book.available }}</td>
+                        <td><a class="btn btn-danger delbook_id" href="{% url 'delete_book' book.id %}"><span
+                                class="glyphicon glyphicon-remove"></span> Borrar</a>
+                            <a href="#" id="editButton" data-id="{{ book.id }}" class="btn btn-warning editButton ebook_id">
+                                <span class="glyphicon glyphicon-edit"></span> Editar</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <input type="text" style="display:none" id="idBook" value="">
+
+        <div id="edit_form" style="display:none;">
+          <div class="col-lg-3"></div>
+          <div class="col-lg-6">
+              <form id="form" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="form-group">
+                      <label>Título</label>
+                      <input type="text" id="titleEdit" required="required" class="form-control"/>
+                  </div>
+                  <div class="form-group">
+                      <label>Descripción</label>
+                      <input type="text" id="descriptionEdit" name="description" class="form-control"/>
+                  </div>
+                  <div class="form-group">
+                      <label>Categoría</label>
+                      <select class="form-control" id="categoryEdit">
+                          {% for category in categories %}
+                              <option value='{{ category.id }}'>{{ category.title }}</option>
+                          {% endfor %}
+                      </select>
+                  </div>
+                  <div class="form-group">
+                      <label>Autor</label>
+                      <input type="text" name="author" id="authorEdit" class="form-control" required="required"/>
+                  </div>
+                  <div class="form-group">
+                      <label>Disponibles</label>
+                      <input type="number" min="0" id="quantityEdit" name="quantity" required="required" class="form-control"/>
+                  </div>
+                  <div class="form-group">
+                      <a id="saveEditedBook" type="submit" class="btn btn-success"><span
+                              class="glyphicon glyphicon-save"></span>
+                          Guardar Cambios
+                      </a>
+                  </div>
+              </form>
+          </div>
+        </div>
+
+        <div id="newBook" style="display:none;">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6">
+                <form id="form" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Título</label>
+                        <input type="text" id="title" required="required" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <input type="text" id="description" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select class="form-control" id='category_id'>
+                            {% for category in categories %}
+                                <option value='{{ category.id }}'>{{ category.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Autor</label>
+                        <input type="text" id="author" class="form-control" required="required"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Disponibles</label>
+                        <input type="number" min="0" id="quantity" required="required" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <button id="createBook" class="btn btn-success"><span
+                                class="glyphicon glyphicon-save"></span>
+                            Crear
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable();
+        });
+        $(document).ready(function () {
+            $('#add_book').click(function () {
+                $(this).hide();
+                $('#show_book').show();
+                $('#book_table').slideUp();
+                $('#newBook').slideDown();
+                // $('#show_book').click(function () {
+                //     $(this).hide();
+                //     $('#add_book').show();
+                //     $('#book_table').slideDown();
+                //     $('#book_form').slideUp();
+                // });
+            });
+        });
+
+        // $('.editButton').on('click', function () {
+        //     var id = $(this).attr('data-id');
+        //
+        //     $.ajax({
+        //         url: 'http://localhost:8000/edit_book/' + id,
+        //         method: 'GET'
+        //     }).success(function (response) {
+        //         {#                alert(response.title);#}
+        //         $('#form')
+        //             .find('[name="title"]').val(response.title).end()
+        //             .find('[name="description"]').val(response.description).end()
+        //             .find('[name="author"]').val(response.author).end()
+        //             .find('[name="quantity"]').val(response.quantity).end();
+        //         document.getElementById('save_book').innerText = 'Update';
+        //         $(this).hide();
+        //         $('#show_book').show();
+        //         $('#book_table').slideUp();
+        //         $('#book_form').slideDown();
+        //         $('#add_book').hide();
+        //         $('#show_book').click(function () {
+        //             $(this).hide();
+        //             document.getElementById('form').reset();
+        //             $('#add_book').show();
+        //             $('#book_table').slideDown();
+        //             $('#book_form').slideUp();
+        //         });
+        //     });
+        // });
+
+    </script>
+    <script type="text/javascript" src="{% static 'js/books/CRUD.js' %}"></script>
+
+{% endblock %}

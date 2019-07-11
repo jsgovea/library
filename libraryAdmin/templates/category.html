@@ -1,0 +1,95 @@
+{% extends 'app.html' %}
+{% load staticfiles %}
+
+{% block body %}
+    <div>
+        <div class="alert alert-info">Todas las categorías</div>
+        <a href="#" id="add_book" class="btn btn-success">Agregar nueva categoría</a>
+        <button id="show_book" type="button" style="display:none;" class="btn btn-warning"><span
+                class="glyphicon glyphicon-circle-arrow-left"></span> Volver
+        </button>
+        <div id="book_table">
+            <table id="table" class="table table-bordered">
+                <thead class="alert-success">
+                <tr>
+                    <th class="text-center">Título del libro</th>
+                    <th class="text-center">Acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for categories in category %}
+                    <tr>
+                        <td class="text-center">{{ categories.name }}</td>
+                        <td class="text-center"><a class="btn btn-danger deleteCategory" data-id="{{ categories.pk }}" ><span
+                                class="glyphicon glyphicon-remove"></span> Eliminar</a>
+                            <a href="#" data-id="{{ categories.id }}" class="btn btn-warning editButton category">
+                                <span class="glyphicon glyphicon-edit"></span> Editar</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div id="edit_form" style="display:none;">
+          <div class="col-lg-3"></div>
+          <div class="col-lg-6">
+              <form id="formEdit" method="POST">
+                  {% csrf_token %}
+                  <div class="form-group">
+                      <label>Título:</label>
+                      <input type="text" id="nameEdit" required="required" class="form-control"/>
+                  </div>
+                  <div class="form-group">
+                    <a href="#" id="saveEditedCategory" class="btn btn-success ">
+                      <span class="glyphicon glyphicon-save"></span>
+                      Guardar Cambios
+                    </a>
+                  </div>
+              </form>
+          </div>
+          </div>
+        </div>
+
+        <input type="text" style="display:none" id="idCategory" value="">
+
+        <div id="book_form" style="display:none;">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6">
+                <form id="form" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Título:</label>
+                        <input type="text" id="name" required="required" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <button id="save_category" type="submit" class="btn btn-success">
+                            <span class="glyphicon glyphicon-save"></span>
+                            Crear
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable();
+        });
+        $(document).ready(function () {
+            $('#add_book').click(function () {
+                $(this).hide();
+                $('#show_book').show();
+                $('#book_table').slideUp();
+                $('#book_form').slideDown();
+                // $('#show_book').click(function () {
+                //     $(this).hide();
+                //     $('#add_book').show();
+                //     $('#book_table').slideDown();
+                //     $('#book_form').slideUp();
+                // });
+            });
+        });
+    </script>
+    <script type="text/javascript" src="{% static 'js/category/CRUD.js' %}"></script>
+{% endblock %}
