@@ -6,11 +6,11 @@ $('#createBook').on('click', function(){
     method: 'POST',
     data: {
       csrfmiddlewaretoken: csrftoken,
-      'title': $('#title').val(),
+      'name': $('#name').val(),
       'description': $('#description').val(),
-      'category': $('#categoryEdit').children("option:selected").val(),
+      'category': $('#category_id').children("option:selected").val(),
       'author': $('#author').val(),
-      'quantity': $('#quantity').val(),
+      'available': $('#quantity').val(),
     }
   }).success(function(response){
     var res = JSON.parse(response);
@@ -24,7 +24,6 @@ $('#createBook').on('click', function(){
 $('.editButton').on('click', function(){
   $('#add_book').hide();
   $('#show_book').show();
-
   var id = $(this).attr('data-id');
   $.ajax({
     url: 'http://127.0.0.1:8000/get_book/',
@@ -34,12 +33,13 @@ $('.editButton').on('click', function(){
       'pk': id
     }
   }).success(function(response){
-    var res = JSON.parse(response);
+    var res = JSON.parse(response);  
+      
     if(res.status == 'success'){
       $('#idBook').val(res.data[0].pk);
-      $('#titleEdit').val(res.data[0].title);
+      $('#titleEdit').val(res.data[0].name);
       $('#descriptionEdit').val(res.data[0].description);
-      $('#categoryEdit option[value="res.data[0].categories"]').attr("selected", true);
+      $('#categoryEdit').val(res.data[0].category)
       $('#authorEdit').val(res.data[0].author);
       $('#quantityEdit').val(res.data[0].available);
       $('#book_table').slideUp();
@@ -61,11 +61,11 @@ $('#saveEditedBook').on('click', function(){
     data: {
       csrfmiddlewaretoken: csrftoken,
       'pk': id,
-      'title': title,
+      'name': title,
       'description': description,
       'category': category,
       'author': author,
-      'quantity': quantity,
+      'available': quantity,
     }
   }).success(function(response){
       var res = JSON.parse(response);
@@ -76,6 +76,23 @@ $('#saveEditedBook').on('click', function(){
       }
     });
 
+});
+
+$('.delete-book').on('click', function () {
+  var id = $(this).attr('data-id');
+  $.ajax({
+    url: 'http://127.0.0.1:8000/delete_book/',
+    method: 'POST',
+    data: {
+      csrfmiddlewaretoken: csrftoken,
+      'pk': id
+    }
+  }).success(function(response){
+    var res = JSON.parse(response);
+    if(res.status == 'success'){
+      location.reload();
+    }
+  });
 });
 
 $('#show_book').click(function () {
