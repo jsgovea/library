@@ -5,7 +5,7 @@ from django.db.models import Sum
 from datetime import date
 from datetime import datetime
 
-from libraryAdmin.models import Book, Category, Student
+from libraryAdmin.models import Book, Category, Student, Teacher
 from django.http import HttpResponse
 import json
 from django.db import IntegrityError
@@ -25,6 +25,10 @@ def students_home(request):
 def categories_home(request):
     category = Category.objects.all()
     return render(request, 'category.html', {'category': category})
+
+def teachers_home(request):
+    teachers = Teacher.objects.all()
+    return render(request, 'teachers.html', {'teachers': teachers})
 
 def create_category(request):
     response_data = {}
@@ -214,5 +218,68 @@ def delete_student(request):
         response_data['message'] = 'Student Deleted'
     except Exception:
         response_data['status'] = 'fail'
+        response_data['message'] = 'Something went wrong'
+    return HttpResponse(json.dumps(response_data))
+
+def create_teacher(request):
+    response_data = {}
+    teacher_id = request.POST.get('id')
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    coordination = request.POST.get('coordination')
+    try:
+        new_teacher = Teacher(
+        teacher_id = teacher_id,
+        first_name = first_name,
+        last_name = last_name,
+        coordination = coordination
+        )
+        new_teacher.save()
+        response_data['status'] = 'success'
+        response_data['message'] = 'Teacher Created'
+    except Exception:
+        response_data['status'] = 'fail'
+        response_data['message'] = 'Something went wrong'
+    return HttpResponse(json.dumps(response_data))
+
+def get_teacher(request):
+    response_data = {}
+    teacher_pk = request.POST.get('pk')
+    teacher = Teacher.objects.filter(pk = teacher_pk)
+    response_data['status'] = 'success'
+    response_data['message'] = 'Selected Teacher'
+    response_data['data'] = list(teacher.values('pk', 'teacher_id', 'first_name', 'last_name', 'coordination'))
+    return HttpResponse(json.dumps(response_data))
+
+def edit_teacher(request):
+    response_data = {}
+    teacher_pk = request.POST.get('pk')
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    coordination = request.POST.get('coordination')
+    teacher = Teacher.objects.filter(pk = teacher_pk)
+    try:
+        for edit_teacher in teacher:
+            edit_teacher.first_name = first_name
+            edit_teacher.last_name = last_name
+            edit_teacher.coordination = coordination
+            edit_teacher.save()
+        response_data['status'] = 'success'
+        response_data['message'] = 'Teacher Edited'
+    except Exception:
+        response_data['status'] = 'fail'
+        response_data['message'] = 'Something went wrong'
+    return HttpResponse(json.dumps(response_data))
+
+def delete_teacher(request):
+    response_data = {}
+    teacher_pk = request.POST.get('pk')
+    teacher = Teacher.objects.get(pk = teacher_pk)
+    try:
+        teacher.delete()
+        response_data['status'] = 'success'
+        response_data['message'] = 'Teacher Deleted'
+    except Exception:
+        response_data['stauts'] = 'fail'
         response_data['message'] = 'Something went wrong'
     return HttpResponse(json.dumps(response_data))

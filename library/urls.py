@@ -11,6 +11,8 @@ urlpatterns = [
     path('get_book/', views.get_book, name='get_book'),
     path('students_home/', views.students_home, name='students_home'),
     path('get_student/', views.get_student, name='get_student'),
+    path('teachers_home/', views.teachers_home, name='teachers_home'),
+    path('get_teacher/', views.get_teacher, name='get_teacher'),
 
     # CRUD URLS
     path('create_category/', views.create_category, name='create_category'),
@@ -22,6 +24,9 @@ urlpatterns = [
     path('create_student/', views.create_student, name='create_student'),
     path('edit_student/', views.edit_student, name='edit_student'),
     path('delete_student/', views.delete_student, name='delete_student'),
+    path('create_teacher/', views.create_teacher, name='create_teacher'),
+    path('edit_teacher/', views.edit_teacher, name='edit_teacher'),
+    path('delete_teacher/', views.delete_teacher, name='delete_teacher'),
 
 
 ]
