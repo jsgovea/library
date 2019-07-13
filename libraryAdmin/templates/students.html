@@ -1,0 +1,129 @@
+{% extends 'app.html' %}
+{% load static %}
+{% block body %}
+    <div>
+        <div class="alert alert-info">Lista de estudiantes</div>
+        <a href="#" id="add_book" class="btn btn-success">Agregar estudiante</a>
+        <button id="show_book" type="button" style="display:none;" class="btn btn-success"><span
+                class="glyphicon glyphicon-circle-arrow-left"></span> Volver
+        </button>
+        <div id="book_table">
+            <table id="table" class="table table-bordered">
+                <thead class="alert-success">
+                <tr>
+                    <th>Matrícula</th>
+                    <th>Nombres</th>
+                    <th>Apellido</th>
+                    <th>Carrera</th>
+                    <th>Quatrimestre</th>
+                    <th>Acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for student in students %}
+                    <tr>
+                        <td>{{ student.student_id }}</td>
+                        <td>{{ student.first_name }}</td>
+                        <td>{{ student.last_name }}</td>
+                        <td>{{ student.career }}</td>
+                        <td>{{ student.quarter }}</td>
+                        <td><a class="btn btn-danger delete-student" href="#" data-id="{{ student.pk }}"><span
+                                class="glyphicon glyphicon-remove"></span> Borrar</a>
+                            <a href="#" data-id="{{ student.pk }}" class="btn btn-warning editButton ">
+                                <span class="glyphicon glyphicon-edit"></span> Editar</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <input type="text" style="display:none" id="idStudent" value="">
+
+        <div id="edit_form" style="display: none">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6">
+                <form id="form" method="POST" >
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Matrícula</label>
+                        <input type="text" id="idEdit" disabled required="required" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombres</label>
+                        <input type="text" id="firstNameEdit" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellidos</label>
+                        <input type="text" id="lastNameEdit" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Carrera</label>
+                        <input type="text" id="careerEdit" class="form-control" required="required"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Cuatrimestre</label>
+                        <input type="number" id="quarterEdit" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <a id="editStudent" class="btn btn-primary"><span
+                                class="glyphicon glyphicon-save"></span>
+                            Guardar Cambios
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="book_form" style="display:none;">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6">
+                <form id="form" method="POST" >
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Matrícula</label>
+                        <input type="text" id="id" required="required" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombres</label>
+                        <input type="text" id="firstName" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellidos</label>
+                        <input type="text" id="lastName" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Carrera</label>
+                        <input type="text" id="career" class="form-control" required="required"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Cuatrimestre</label>
+                        <input type="number" id="quarter" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <a id="createStudent" class="btn btn-primary"><span
+                                class="glyphicon glyphicon-save"></span>
+                            Guardar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable();
+        });
+        $(document).ready(function () {
+            $('#add_book').click(function () {
+                $(this).hide();
+                $('#show_book').show();
+                $('#book_table').slideUp();
+                $('#book_form').slideDown();
+            });
+        });
+   </script>
+    <script type="text/javascript" src="{% static 'js/students/CRUD.js' %}"></script>
+
+{% endblock %}

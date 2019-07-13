@@ -5,7 +5,7 @@ from django.db.models import Sum
 from datetime import date
 from datetime import datetime
 
-from libraryAdmin.models import Book, Category
+from libraryAdmin.models import Book, Category, Student
 from django.http import HttpResponse
 import json
 from django.db import IntegrityError
@@ -17,6 +17,10 @@ def books_home(request):
     book = Book.objects.all().order_by('name')
     category = Category.objects.all().order_by('name')
     return render(request, 'books.html', {'book': book, 'category': category})
+
+def students_home(request):
+    students = Student.objects.all()
+    return render(request, 'students.html', {'students': students})
 
 def categories_home(request):
     category = Category.objects.all()
@@ -83,7 +87,7 @@ def create_book(request):
     available = request.POST.get('available')
     category_pk = request.POST.get('category')
     category = Category.objects.get(pk = category_pk)
-    try: 
+    try:
         new_book = Book(
             category = category,
             name = name,
@@ -118,7 +122,7 @@ def update_book(request):
     book = Book.objects.filter(pk = book_pk)
     category_pk = request.POST.get('category')
     category = Category.objects.get(pk = category_pk)
-    try: 
+    try:
         for books in book:
             books.category = category
             books.name = name
@@ -141,6 +145,73 @@ def delete_book(request):
         book.delete()
         response_data['status'] = 'success'
         response_data['message'] = 'Book Deleted'
+    except Exception:
+        response_data['status'] = 'fail'
+        response_data['message'] = 'Something went wrong'
+    return HttpResponse(json.dumps(response_data))
+
+def create_student(request):
+    response_data = {}
+    student_id = request.POST.get('id')
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    career = request.POST.get('career')
+    quarter = request.POST.get('quarter')
+    try:
+        new_student = Student(
+            student_id = student_id,
+            first_name = first_name,
+            last_name = last_name,
+            career = career,
+            quarter = quarter
+        )
+        new_student.save()
+        response_data['status'] = 'success'
+        response_data['message'] = 'Student Created'
+    except Exception:
+        response_data['status'] = 'fail'
+        response_data['message'] = 'Something went wrong'
+    return HttpResponse(json.dumps(response_data))
+
+def get_student(request):
+    response_data = {}
+    student_pk = request.POST.get('pk')
+    student = Student.objects.filter(pk = student_pk)
+    response_data['status'] = 'success'
+    response_data['message'] = 'Selected Student'
+    response_data['data'] = list(student.values('pk', 'student_id', 'first_name', 'last_name', 'career', 'quarter'))
+    return HttpResponse(json.dumps(response_data))
+
+def edit_student(request):
+    response_data = {}
+    student_pk = request.POST.get('pk')
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    career = request.POST.get('career')
+    quarter = request.POST.get('quarter')
+    student = Student.objects.filter(pk = student_pk)
+    try:
+        for edit_student in student:
+            edit_student.first_name = first_name
+            edit_student.last_name = last_name
+            edit_student.career = career
+            edit_student.quarter = quarter
+            edit_student.save()
+        response_data['status'] = 'success'
+        response_data['message'] = 'Student Edited'
+    except Exception:
+        response_data['status'] = 'fail'
+        response_data['message'] = 'Something went wrong'
+    return HttpResponse(json.dumps(response_data))
+
+def delete_student(request):
+    response_data = {}
+    student_pk = request.POST.get('pk')
+    student = Student.objects.get(pk = student_pk)
+    try:
+        student.delete()
+        response_data['status'] = 'success'
+        response_data['message'] = 'Student Deleted'
     except Exception:
         response_data['status'] = 'fail'
         response_data['message'] = 'Something went wrong'

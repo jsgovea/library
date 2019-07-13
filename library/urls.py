@@ -9,6 +9,8 @@ urlpatterns = [
     path('categories_home/', views.categories_home, name='categories_home'),
     path('get_category/', views.get_category, name='get_category'),
     path('get_book/', views.get_book, name='get_book'),
+    path('students_home/', views.students_home, name='students_home'),
+    path('get_student/', views.get_student, name='get_student'),
 
     # CRUD URLS
     path('create_category/', views.create_category, name='create_category'),
@@ -17,6 +19,9 @@ urlpatterns = [
     path('create_book/', views.create_book, name='create_book'),
     path('update_book/', views.update_book, name='update_book'),
     path('delete_book/', views.delete_book, name='delete_book'),
+    path('create_student/', views.create_student, name='create_student'),
+    path('edit_student/', views.edit_student, name='edit_student'),
+    path('delete_student/', views.delete_student, name='delete_student'),
 
 
 ]
