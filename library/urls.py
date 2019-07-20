@@ -13,6 +13,10 @@ urlpatterns = [
     path('get_student/', views.get_student, name='get_student'),
     path('teachers_home/', views.teachers_home, name='teachers_home'),
     path('get_teacher/', views.get_teacher, name='get_teacher'),
+    path('borrow_home/', views.borrow_home, name='borrow_home'),
+    path('history_home/', views.history_home, name='history_home'),
+    path('borrow_teachers/', views.borrow_teachers, name='borrow_teachers'),
+    path('history_teachers/', views.history_teachers, name='history_teachers'),
 
     # CRUD URLS
     path('create_category/', views.create_category, name='create_category'),
@@ -27,6 +31,11 @@ urlpatterns = [
     path('create_teacher/', views.create_teacher, name='create_teacher'),
     path('edit_teacher/', views.edit_teacher, name='edit_teacher'),
     path('delete_teacher/', views.delete_teacher, name='delete_teacher'),
+    path('register_borrow/', views.register_borrow, name='register_borrow'),
+    path('borrow_end/', views.borrow_end, name='borrow_end'),
+    path('register_borrow_teachers/', views.register_borrow_teachers, name='register_borrow_teachers'),
+    path('borrow_end_teachers/', views.borrow_end_teachers, name='borrow_end_teachers'),
+
 
 
 ]

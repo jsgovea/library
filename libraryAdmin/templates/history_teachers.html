@@ -1,0 +1,112 @@
+{% extends 'app.html' %}
+{% load static %}
+{% block body %}
+    <div>
+        <div class="alert alert-info">Lista de prestamos docentes</div>
+        <div id="book_table">
+            <table id="table" class="table table-bordered">
+                <thead class="alert-success">
+                <tr>
+                    <th>Titulo</th>
+                    <th>Docente</th>
+                    <th>Fecha</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for borrows in borrow %}
+                    <tr>
+                        <td>{{ borrows.book }}</td>
+                        <td>{{ borrows.teacher }}</td>
+                        <td>{{ borrows.date }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <input type="text" style="display:none" id="pkTeacher" value="">
+
+        <div id="edit_form" style="display: none">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6">
+                <form id="form" method="POST" >
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Matrícula</label>
+                        <input type="text" id="idEdit" disabled required="required" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombres</label>
+                        <input type="text" id="firstNameEdit" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellidos</label>
+                        <input type="text" id="lastNameEdit" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Coordinación</label>
+                        <input type="text" id="coordinationEdit" class="form-control" required="required"/>
+                    </div>
+                    <div class="form-group">
+                        <a id="editTeacher" class="btn btn-primary"><span
+                                class="glyphicon glyphicon-save"></span>
+                            Guardar Cambios
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="book_form" style="display:none;">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6">
+                <form id="form" method="POST" >
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Libro</label>
+                        <select class="form-control" id="bookSelect">
+                          {% for book in books %}
+                          <option value="{{ book.pk }}">{{ book.name }}</option>
+                          {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                      <select class="form-control" id="studentSelect">
+                        {% for student in students %}
+                        <option value="{{ student.pk }}">{{ student.first_name }} {{ student.last_name }} </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <select class="form-control" id="teacherSelect">
+                        {% for teacher in teachers %}
+                        <option value="{{ teacher.pk }}">{{ teacher.first_name }} {{ teacher.last_name }} </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="form-group">
+                        <a id="createBorrow" class="btn btn-primary"><span
+                                class="glyphicon glyphicon-save"></span>
+                            Guardar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable();
+        });
+        $(document).ready(function () {
+            $('#add_book').click(function () {
+                $(this).hide();
+                $('#show_book').show();
+                $('#book_table').slideUp();
+                $('#book_form').slideDown();
+            });
+        });
+   </script>
+
+{% endblock %}

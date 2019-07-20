@@ -18,17 +18,19 @@
                     <li><a href="{% url 'teachers_home' %}">Docentes</a></li>
                 </ul>
             </li>
-            <!-- <li>
+            <li>
                 <a class="accordion-toggle collapsed toggle-switch" data-toggle="collapse" href="#submenu-3">
                     <span class="sidebar-icon"><i class="fa fa-newspaper-o"></i></span>
                     <span class="sidebar-title">Acciones</span>
                     <b class="caret"></b>
                 </a>
                 <ul id="submenu-3" class="panel-collapse collapse panel-switch" role="menu">
-                    <li><a href="#">Prestamos</a></li>
-                    <li><a href="#">Retornos</a></li>
+                    <li><a href="{% url 'borrow_home' %}">Prestamos Estudiantes</a></li>
+                    <li><a href="{% url 'borrow_teachers' %}">Prestamos Docentes</a></li>
+                    <li><a href="{% url 'history_home' %}">Historial Estudiantes</a></li>
+                    <li><a href="{% url 'history_teachers' %}">Historial Docentes</a></li>
                 </ul>
-            </li> -->
+            </li>
             <li>
                 <a href="{% url 'books_home' %}">
                     <span class="sidebar-icon"><i class="fa fa-database"></i></span>

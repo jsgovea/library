@@ -5,8 +5,10 @@ from django.db.models import Sum
 from datetime import date
 from datetime import datetime
 
-from libraryAdmin.models import Book, Category, Student, Teacher
+from libraryAdmin.models import Book, Category, Student, Teacher, Borrow, BorrowTeacher
 from django.http import HttpResponse
+from django.utils import timezone
+
 import json
 from django.db import IntegrityError
 # Create your views here.
@@ -29,6 +31,17 @@ def categories_home(request):
 def teachers_home(request):
     teachers = Teacher.objects.all()
     return render(request, 'teachers.html', {'teachers': teachers})
+
+def borrow_home(request):
+    borrow = Borrow.objects.filter(is_active = True)
+    books = Book.objects.all()
+    students = Student.objects.all()
+    return render(request, 'borrow.html',
+    {
+    'borrow': borrow,
+    'books': books,
+    'students': students,
+    })
 
 def create_category(request):
     response_data = {}
@@ -283,3 +296,94 @@ def delete_teacher(request):
         response_data['stauts'] = 'fail'
         response_data['message'] = 'Something went wrong'
     return HttpResponse(json.dumps(response_data))
+
+def register_borrow(request):
+    response_data = {}
+    book_pk = request.POST.get('book')
+    student_pk = request.POST.get('student')
+    book = Book.objects.get(pk = book_pk)
+    student = Student.objects.get(pk = student_pk)
+    status = 'Prestado'
+    print(book)
+    try:
+        new_borrow = Borrow(
+        book = book,
+        student = student,
+        status = status,
+        )
+        new_borrow.save()
+        response_data['status'] = 'success'
+        response_data['message'] = 'Book borrowed'
+    except Exception:
+        response_data['stauts'] = 'fail'
+        response_data['message'] = 'Something went wrong'
+    return HttpResponse(json.dumps(response_data))
+
+def history_home(request):
+    borrow = Borrow.objects.filter(is_active = False).order_by('date')
+    return render(request, 'history.html', {
+    'borrow': borrow,
+    })
+
+def borrow_end(request):
+    response_data = {}
+    borrow_pk = request.POST.get('pk')
+    borrow = Borrow.objects.get(pk = borrow_pk)
+    try:
+        borrow.is_active = False
+        borrow.save()
+        response_data['status'] = 'success'
+        response_data['message'] = 'Borrow Finished'
+    except Exception:
+        response_data['status'] = 'fail'
+        response_data['message'] = 'Something went wrong'
+    return HttpResponse(json.dumps(response_data))
+
+def borrow_teachers(request):
+    borrow = BorrowTeacher.objects.filter(is_active = True).order_by('date')
+    books = Book.objects.all()
+    teachers = Teacher.objects.all()
+    return render(request, 'borrow_teachers.html', {
+    'borrow': borrow,
+    'books': books,
+    'teachers': teachers
+    })
+
+
+def register_borrow_teachers(request):
+    response_data = {}
+    book_pk = request.POST.get('book')
+    teacher_pk = request.POST.get('teacher')
+    book = Book.objects.get(pk = book_pk)
+    teacher = Teacher.objects.get(pk = teacher_pk)
+    status = 'Prestado'
+    try:
+        new_borrow = BorrowTeacher(
+        book = book,
+        teacher = teacher,
+        status = status,
+        )
+        new_borrow.save()
+        response_data['status'] = 'success'
+        response_data['message'] = 'Book borrowed'
+    except Exception:
+        response_data['stauts'] = 'fail'
+        response_data['message'] = 'Something went wrong'
+    return HttpResponse(json.dumps(response_data))
+def borrow_end_teachers(request):
+    response_data = {}
+    borrow_pk = request.POST.get('pk')
+    borrow = BorrowTeacher.objects.get(pk = borrow_pk)
+    try:
+        borrow.is_active = False
+        borrow.save()
+        response_data['status'] = 'success'
+        response_data['message'] = 'Borrow Finished'
+    except Exception:
+        response_data['status'] = 'fail'
+        response_data['message'] = 'Something went wrong'
+    return HttpResponse(json.dumps(response_data))
+
+def history_teachers(request):
+    borrow = BorrowTeacher.objects.filter(is_active = False).order_by('-date')
+    return render(request, 'history_teachers.html', {'borrow': borrow})

@@ -1,5 +1,7 @@
 from django.db import models
 from datetime import date
+from django.utils import timezone
+
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -38,9 +40,18 @@ class Teacher(models.Model):
 
 class Borrow(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    date = models.DateField(default=date.today)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True, blank=True)
+    date = models.DateTimeField(default = timezone.now)
+    is_active = models.BooleanField(default=True)
     status = models.CharField(max_length=25)
-
     def __str__(self):
-        return self.date
+        return self.status
+
+class BorrowTeacher(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True, blank=True)
+    date = models.DateTimeField(default = timezone.now)
+    is_active = models.BooleanField(default=True)
+    status = models.CharField(max_length=25)
+    def __str__(self):
+        return self.status
